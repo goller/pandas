@@ -2905,8 +2905,10 @@ class DataFrame(NDFrame):
                                 else like in str(x))
             return self.select(matchf, axis=1)
         elif regex:
-            matcher = re.compile(regex)
-            return self.select(lambda x: matcher.search(x) is not None, axis=1)
+            m = re.compile(regex)
+            matchf = lambda x: (m.search(x) is not None if isinstance(x, basestring)
+                                else m.search(str(x)))
+            return dframe.select(matchf, axis=1)
         else:
             raise ValueError('items was None!')
 
